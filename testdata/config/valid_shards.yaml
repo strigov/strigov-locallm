@@ -1,0 +1,5 @@
+llama:
+  server_exe: '%LOCALLM_TEST_DIR%\llama-server.exe'
+models:
+  big:
+    path: '%LOCALLM_TEST_DIR%\shard-00001-of-00002.gguf'

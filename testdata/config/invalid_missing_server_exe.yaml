@@ -1,0 +1,3 @@
+models:
+  tiny:
+    path: '%LOCALLM_TEST_DIR%\model.gguf'

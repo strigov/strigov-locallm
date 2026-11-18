@@ -1,0 +1,14 @@
+# models.yaml — модели locallm-host. Файл перезаписывает веб-панель, комментарии при этом не сохраняются.
+# После ручной правки: панель → «Применить файл» или перезапуск хоста.
+version: 1
+models:
+  qwen-coder:
+    path: 'C:\models\unsloth--Qwen3.8-27B-GGUF\Qwen3.8-27B-UD-IQ3_XXS.gguf'
+    args: ['-c', '32768']
+    profiles:
+      long: ['-c', '65536', '-ctk', 'q8_0', '-ctv', 'q8_0']
+  gemma:
+    path: 'C:\models\google-- gemma-4-26B-q4-0-it-GGUF\gemma-4-26B_q4_0-it.gguf'
+    args: ['-c', '16384', '--mmproj', 'C:\models\google-- gemma-4-26B-q4-0-it-GGUF\mmproj-gemma-4-26B-A4B-it-Q8_0.gguf']
+  tiny:
+    path: 'C:\models\LiquidAI--LFM2.5-2.6B-GGUF\LFM2.5-2.6B-QAD-Q4_0.gguf'

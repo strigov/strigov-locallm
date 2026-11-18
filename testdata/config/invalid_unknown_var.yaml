@@ -1,0 +1,5 @@
+llama:
+  server_exe: '%NO_SUCH_VAR_LOCALLM%\llama-server.exe'
+models:
+  tiny:
+    path: '%LOCALLM_TEST_DIR%\model.gguf'

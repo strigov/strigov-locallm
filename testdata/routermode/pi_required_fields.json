@@ -1,0 +1,43 @@
+{
+  "source": "https://github.com/earendil-works/pi/blob/707888ece685778881c40d232880c5a0b93a12f1/packages/coding-agent/src/extensions/llama/client.ts",
+  "source_sha": "707888ece685778881c40d232880c5a0b93a12f1",
+  "read_at": "2026-11-05",
+  "provisional": false,
+  "router_detection": "GET /models (optional ?reload=1): a missing or non-array data field throws 'llama.cpp returned an invalid model catalog' (client.ts lines 208-209); a data array containing any item without string id and string status.value throws 'Server is not running in llama.cpp router mode' (isModelInfo lines 56-60, list() lines 211-212)",
+  "models": {
+    "response_required": ["data"],
+    "item_required": ["id", "status"],
+    "status_required": ["value"],
+    "status_values": ["loaded", "loading", "unloaded", "downloading", "sleeping"],
+    "failed_detection": "entry.status.failed truthy (client.ts line 308); message uses status.exit_code when defined ('Model exited with code N', lines 309-312); status.value stays 'unloaded' on failure; an SSE event with data.status 'unloaded' also sets 'Model failed to load' (line 296)"
+  },
+  "load": {
+    "method": "POST",
+    "path": "/models/load",
+    "body": {"model": "<id>"},
+    "timeout_ms": 15000,
+    "success": "any HTTP 2xx (response.ok, line 202); the body is parsed as JSON only for error text and {\"success\":true} is not checked (lines 227-229); non-2xx uses error.message from the JSON body or 'llama.cpp returned HTTP <status>'; the 15 s timeout applies to every request including this one (line 193)"
+  },
+  "unload": {
+    "method": "POST",
+    "path": "/models/unload",
+    "body": {"model": "<id>"},
+    "success": "any HTTP 2xx (response.ok, line 202); unloadAndWait then polls GET /models every 100 ms until the entry is missing or status.value is 'unloaded' (lines 231-242)"
+  },
+  "polling": {
+    "path": "/models",
+    "interval_ms": 250,
+    "max_poll_ms": "none",
+    "stop_condition": "loadAndWait (lines 282-321) polls GET /models every 250 ms (line 315) until status.value is 'loaded' (line 306), or status.failed is truthy (line 308), or the caller's AbortSignal fires (line 304); there is no overall poll limit, only the 15 s per-request timeout (line 193); status.value 'unloaded' without failed keeps polling"
+  },
+  "other_endpoints_used": {
+    "sse": "GET /models/sse, SSE frames with JSON {model, event, data}; errors are ignored and polling stays authoritative (watch(), lines 248-280, comment line 274)",
+    "props": "REQUIRED for every loaded chat model: GET /props?model=<id>&autoload=false, reads models_autoload and chat_template (client.ts lines 216-225). provider.ts lines 268-275 await client.props({model}) inside Promise.all without a catch; only routerAutoloadEnabled catches props errors (lines 53-57). index.ts lines 54-62 rethrow from syncCatalog: a 404 makes /llama fail after a successful load (line 108), restoreLoaded in replace mode swaps back, and readCatalog shows the connection-error screen (lines 196-198). Owner decision needed before plan 2 phase F4: forward GET /props to the current upstream (recommended, real chat_template), or return HTTP 200 {} (pi treats the model as having no thinking support). provider.ts and index.ts references are reviewer-read evidence supplied in the fix-round-2 brief at source_sha, not locally read files",
+    "reload": "GET /models?reload=1 (line 207)",
+    "download": "POST /models with body {\"model\": \"<id>\"} (lines 244-246)"
+  },
+  "plan2_compatibility": {
+    "architecture_input_modalities": "Zero-filled architecture.input_modalities makes pi treat every model as text-only; plan 2 must account for the actual model modalities (owner-approved fix-round-2 brief)",
+    "unknown_model_errors": "Q2 is settled by spec section 9.4: host errors use section 9.6, not the router error format. pi reads only error.message from a non-2xx JSON body (client.ts lines 48-54); it does not depend on the router error code or type"
+  }
+}

@@ -1,0 +1,34 @@
+server:
+  listen: 127.0.0.2:18080
+  api_keys_file: '%LOCALLM_TEST_DIR%\keys.txt'
+llama:
+  server_exe: '%LOCALLM_TEST_DIR%\llama-server.exe'
+  port: 18081
+  default_args: ['-ngl', '99', '-c', '4096']
+  load_timeout: 120s
+  stop_timeout: 5s
+  log_lines: 500
+swap:
+  default_model: alpha
+  swap_cooldown: 0
+  wait_timeout: 30s
+  vram_free_timeout: 3s
+  vram_margin_mib: 256
+  max_queue: 4
+  failed_ttl: 0s
+vram:
+  source: none
+logging:
+  dir: '%LOCALLM_TEST_DIR%\logs'
+  level: debug
+  max_size_mib: 1
+  max_files: 2
+models:
+  zeta:
+    path: '%LOCALLM_TEST_DIR%\model.gguf'
+    args: ['-c', '8192', '--mmproj', '%LOCALLM_TEST_DIR%\mmproj.gguf', '--chat-template-file', '%LOCALLM_TEST_DIR%\template.jinja']
+  alpha:
+    path: '%LOCALLM_TEST_DIR%\MODEL2.GGUF'
+  mid:
+    path: '%LOCALLM_TEST_DIR%\model.gguf'
+    args: ['--ctx-size', '0']

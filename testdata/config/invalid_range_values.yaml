@@ -1,0 +1,23 @@
+llama:
+  server_exe: '%LOCALLM_TEST_DIR%\llama-server.exe'
+  port: 80
+  load_timeout: 5s
+  stop_timeout: 61s
+  log_lines: 50
+swap:
+  swap_cooldown: -1s
+  wait_timeout: 600s
+  vram_free_timeout: 0s
+  vram_margin_mib: 5000
+  max_queue: 0
+  failed_ttl: -1s
+vram:
+  source: nvml
+logging:
+  dir: 'logs'
+  level: verbose
+  max_size_mib: 0
+  max_files: 101
+models:
+  tiny:
+    path: '%LOCALLM_TEST_DIR%\model.gguf'

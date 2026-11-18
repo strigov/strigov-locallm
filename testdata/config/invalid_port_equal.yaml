@@ -1,0 +1,7 @@
+server:
+  listen: 127.0.0.1:8081
+llama:
+  server_exe: '%LOCALLM_TEST_DIR%\llama-server.exe'
+models:
+  tiny:
+    path: '%LOCALLM_TEST_DIR%\model.gguf'

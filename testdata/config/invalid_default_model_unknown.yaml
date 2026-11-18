@@ -1,0 +1,7 @@
+llama:
+  server_exe: '%LOCALLM_TEST_DIR%\llama-server.exe'
+swap:
+  default_model: ghost
+models:
+  tiny:
+    path: '%LOCALLM_TEST_DIR%\model.gguf'

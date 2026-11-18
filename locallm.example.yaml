@@ -1,0 +1,39 @@
+# locallm.example.yaml — пример общих настроек хоста v2 (спецификация v2 §5.1, §5.2).
+# Скопируйте в %LOCALAPPDATA%\locallm\locallm.yaml, а models.example.yaml — рядом, в models.yaml.
+# Этот файл читается только при старте: после правки перезапустите хост. Модели и профили — в models.yaml.
+# Значения таймаутов — по итогам замеров на реальном ПК (спайки S4 и S7).
+server:
+  listen: 127.0.0.1:8080
+  api_keys_file: '%LOCALAPPDATA%\locallm\keys.txt'
+  # admin_key_file: '%LOCALAPPDATA%\locallm\admin-key.txt'   # ключ администратора для панели; не тот же файл, что api_keys_file
+  # admin_hosts: ['имя-пк.example']                          # ещё имена ПК для /ui и /api/admin/* (без порта, не больше 16)
+  # state_file: '%LOCALAPPDATA%\locallm\state.json'          # где хранится пауза
+
+llama:
+  server_exe: 'C:\llama\llama-server.exe'
+  port: 8081
+  default_args: ['-ngl', '99', '-np', '1', '-fa', 'on', '--cache-reuse', '256', '--no-webui']
+  load_timeout: 300s          # S4 2026-11-05: max(300s, 3 x max загрузки 1m0.26s = 3m1s) -> 300s
+  stop_timeout: 15s           # S4 2026-11-05: max(5s, 3 x max выхода 4.75s)
+  log_lines: 1000
+
+swap:
+  default_model: qwen-coder   # загружается при старте хоста; '' — ничего не загружать; можно имя профиля, например qwen-coder-long
+  swap_cooldown: 30s          # период остывания; 0 — выключен
+  wait_timeout: 210s          # S4: >= 2m10s; S7 2026-11-07: клиенты ждут >= 240s, минус 30s -> 210s
+  vram_free_timeout: 10s      # S4 2026-11-05: max(5s, 2 x max освобождения 4.75s)
+  vram_margin_mib: 428        # S4 2026-11-05: max(256, max остатка 172 + 256)
+  max_queue: 8
+  failed_ttl: 120s            # сколько помним, что модель не загрузилась
+
+vram:
+  source: auto                # auto | pdh | nvidia-smi | none
+
+logging:
+  dir: '%LOCALAPPDATA%\locallm\logs'
+  level: info
+  max_size_mib: 10
+  max_files: 5
+
+# models_file: '%LOCALAPPDATA%\locallm\models.yaml'   # по умолчанию — models.yaml в каталоге этого файла
+models_dirs: ['C:\models']    # откуда панель берёт файлы .gguf (поиск и проверка путей); только локальные диски, не больше 16

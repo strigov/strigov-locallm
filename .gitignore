@@ -1,0 +1,15 @@
+.env
+.env.*
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+bin/
+
+# служебные файлы superpowers (планы, журналы прогонов)
+.superpowers/
+*.ledger.json

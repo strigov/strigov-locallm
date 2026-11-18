@@ -1,0 +1,3 @@
+llama:
+  server_exe: '%LOCALLM_TEST_DIR%\llama-server.exe'
+models: {}

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>locallm</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<div class="langbar"><select id="lang" aria-label="Language"></select></div>
+
+<section id="login" class="card login" hidden>
+  <h1>locallm</h1>
+  <label for="admin-key" data-i18n="adminKey">Ключ администратора</label>
+  <input id="admin-key" type="password" autocomplete="current-password" spellcheck="false">
+  <button id="login-btn" type="button" class="primary" data-i18n="login">Войти</button>
+  <p class="hint" data-i18n="loginHint">На ПК панель открывается из значка в трее без ключа</p>
+  <p id="login-error" class="error" role="alert"></p>
+</section>
+
+<main id="main" hidden>
+  <header id="bar" class="card bar" data-lamp="">
+    <h1 class="brand">locallm</h1>
+    <div class="status">
+      <strong id="status-text"></strong>
+      <span id="since-text" class="muted"></span>
+      <span id="vram-text" class="muted"></span>
+    </div>
+    <div class="actions">
+      <button id="pause-btn" type="button" data-i18n="pause">Пауза</button>
+      <label id="pause-force-label" class="inline"><input id="pause-force" type="checkbox"> <span data-i18n="pauseForce">прервать текущие ответы</span></label>
+      <button id="unload-btn" type="button" data-i18n="unload">Выгрузить</button>
+      <button id="force-btn" type="button" class="danger" data-i18n="forceUnload">Прервать и выгрузить</button>
+      <button id="logout-btn" type="button" data-i18n="logout">Выйти</button>
+    </div>
+    <p class="hint" data-i18n="unloadHint">«Выгрузить»: если клиенты продолжают слать запросы, модель загрузится снова; чтобы видеокарта осталась свободной — Пауза</p>
+  </header>
+
+  <div id="banners"></div>
+  <p id="message" class="message" role="status"></p>
+
+  <section class="card">
+    <h2 data-i18n="models">Модели</h2>
+    <div class="scroll">
+      <table class="models">
+        <thead><tr><th data-i18n="colName">Имя</th><th data-i18n="colStatus">Статус</th><th data-i18n="colContext">Контекст</th><th data-i18n="colLabels">Метки</th><th data-i18n="colActions">Действия</th></tr></thead>
+        <tbody id="models-body"></tbody>
+      </table>
+    </div>
+    <p id="models-empty" class="muted" hidden><span data-i18n="modelsEmpty">Моделей нет. Файл моделей:</span> <span id="models-file" class="mono"></span></p>
+    <button id="scan-btn" type="button" data-i18n="scanBtn">Найти .gguf и добавить модель</button>
+  </section>
+
+  <section id="scan" class="card" hidden>
+    <div class="row"><h2 data-i18n="scanTitle">Файлы .gguf</h2><button id="scan-close" type="button" data-i18n="close">Закрыть</button></div>
+    <p id="scan-status" class="muted"></p>
+    <div id="scan-list" class="scroll"></div>
+    <ul id="scan-errors" class="error"></ul>
+  </section>
+
+  <section id="editor" class="card" hidden>
+    <h2 id="ed-title" data-i18n="edModel">Модель</h2>
+    <div class="field">
+      <label for="ed-id" data-i18n="colName">Имя</label>
+      <input id="ed-id" type="text" spellcheck="false" maxlength="64" aria-describedby="ed-id-err">
+      <p id="ed-id-err" class="error"></p>
+    </div>
+    <div class="field">
+      <label for="ed-path" data-i18n="colFile">Файл</label>
+      <div class="row"><input id="ed-path" type="text" spellcheck="false" aria-describedby="ed-path-note ed-path-err"><button id="ed-pick" type="button" data-i18n="edPick">Выбрать из найденных</button></div>
+      <p id="ed-path-note" class="note"></p>
+      <p id="ed-path-err" class="error"></p>
+    </div>
+    <div id="ed-proj-row" class="field" hidden>
+      <label for="ed-proj" data-i18n="edProj">Проектор (картинки)</label>
+      <select id="ed-proj"></select>
+    </div>
+    <div class="field">
+      <label for="ed-args" data-i18n="edArgs">Флаги — один аргумент на строку</label>
+      <textarea id="ed-args" rows="6" spellcheck="false" aria-describedby="ed-args-note ed-args-err"></textarea>
+      <p id="ed-args-note" class="note"></p>
+      <p id="ed-args-err" class="error"></p>
+    </div>
+    <p id="ed-reasons" class="note"></p>
+    <h3 data-i18n="profiles">Профили</h3>
+    <div id="ed-profiles"></div>
+    <button id="ed-add-profile" type="button" data-i18n="addProfile">Добавить профиль</button>
+    <h3 data-i18n="defaultArgs">Общие флаги default_args (только чтение)</h3>
+    <pre id="ed-defaults" class="mono"></pre>
+    <ul id="ed-warnings" class="warnings"></ul>
+    <ul id="ed-errors" class="error"></ul>
+    <div class="row ed-buttons">
+      <button id="ed-save" type="button" class="primary" data-i18n="save">Сохранить</button>
+      <button id="ed-cancel" type="button" data-i18n="cancel">Отмена</button>
+    </div>
+  </section>
+
+  <section id="log" class="card" hidden>
+    <div class="row">
+      <h2 id="log-title" data-i18n="log">Журнал</h2>
+      <button id="log-refresh" type="button" data-i18n="refresh">Обновить</button>
+      <button id="log-close" type="button" data-i18n="close">Закрыть</button>
+    </div>
+    <pre id="log-text" class="mono log" tabindex="0" role="region" aria-labelledby="log-title"></pre>
+  </section>
+</main>
+</body>
+</html>
