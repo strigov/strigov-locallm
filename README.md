@@ -34,6 +34,7 @@ Your laptops use them from anywhere — in [opencode](https://opencode.ai), [pi]
 - [Update and uninstall](#update-and-uninstall)
 - [Security](#security)
 - [More documentation](#more-documentation)
+- [License](#license)
 
 ---
 
@@ -555,3 +556,9 @@ It stops the host and removes the program, the shortcut, autostart and the tailn
 - [`docs/reference.ru.md`](docs/reference.ru.md) — full reference (in Russian): all settings, tray and panel items, error codes, exit codes, logs.
 - [`locallm.example.yaml`](locallm.example.yaml), [`models.example.yaml`](models.example.yaml) — annotated example settings.
 - [`docs/specs/`](docs/specs/) — design specs: how the host works and why (in Russian).
+
+---
+
+## License
+
+[MIT](LICENSE). The tray icon is from [Fluent UI Emoji](https://github.com/microsoft/fluentui-emoji) (MIT), see `internal/tray/assets/LICENSE-fluentui-emoji.txt`.

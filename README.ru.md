@@ -34,6 +34,7 @@
 - [Обновление и удаление](#обновление-и-удаление)
 - [Безопасность](#безопасность)
 - [Подробная документация](#подробная-документация)
+- [Лицензия](#лицензия)
 
 ---
 
@@ -553,3 +554,9 @@ pwsh -File scripts\uninstall.ps1 -Purge   # удаляет и их
 - [`docs/reference.ru.md`](docs/reference.ru.md) — полный справочник: все настройки, пункты меню и панели, коды ошибок, коды выхода, журналы.
 - [`locallm.example.yaml`](locallm.example.yaml), [`models.example.yaml`](models.example.yaml) — примеры настроек с комментариями.
 - [`docs/specs/`](docs/specs/) — спецификации: как и почему устроен хост.
+
+---
+
+## Лицензия
+
+[MIT](LICENSE). Значок в трее — из [Fluent UI Emoji](https://github.com/microsoft/fluentui-emoji) (MIT), см. `internal/tray/assets/LICENSE-fluentui-emoji.txt`.
